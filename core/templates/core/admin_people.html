@@ -1,0 +1,14 @@
+{% extends "core/dashboard_base.html" %}
+{% block dashboard_content %}
+<h1 class="page-title">VIP والمتحدثون والرعاة</h1>
+<div class="grid">
+  <section class="panel"><h2>VIP</h2><form method="post">{% csrf_token %}<input type="hidden" name="form_kind" value="vip">{% include "core/partials/form_fields.html" with form=vip_form %}<button class="primary" type="submit">حفظ VIP</button></form></section>
+  <section class="panel"><h2>متحدث</h2><form method="post" enctype="multipart/form-data">{% csrf_token %}<input type="hidden" name="form_kind" value="speaker">{% include "core/partials/form_fields.html" with form=speaker_form %}<button class="primary" type="submit">حفظ المتحدث</button></form></section>
+  <section class="panel"><h2>راعي</h2><form method="post" enctype="multipart/form-data">{% csrf_token %}<input type="hidden" name="form_kind" value="sponsor">{% include "core/partials/form_fields.html" with form=sponsor_form %}<button class="primary" type="submit">حفظ الراعي</button></form></section>
+</div>
+<section class="section grid">
+  <div class="panel"><h2>VIP</h2>{% for item in vip %}<p>{{ item.name }} · {{ item.get_status_display }}</p>{% empty %}<p>لا توجد دعوات.</p>{% endfor %}</div>
+  <div class="panel"><h2>المتحدثون</h2>{% for item in speakers %}<p>{{ item.name }} · {{ item.event.name }}</p>{% empty %}<p>لا يوجد متحدثون.</p>{% endfor %}</div>
+  <div class="panel"><h2>الرعاة</h2>{% for item in sponsors %}<p>{{ item.name }} · {{ item.get_level_display }}</p>{% empty %}<p>لا يوجد رعاة.</p>{% endfor %}</div>
+</section>
+{% endblock %}

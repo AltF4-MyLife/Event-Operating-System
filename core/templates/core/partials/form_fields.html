@@ -1,0 +1,6 @@
+{{ form.non_field_errors }}
+<div class="form-grid">
+  {% for field in form %}
+    <label class="field">{{ field.label }}{{ field }}{{ field.errors }}</label>
+  {% endfor %}
+</div>

@@ -1,0 +1,13 @@
+{% extends "core/dashboard_base.html" %}
+{% block dashboard_content %}
+<h1 class="page-title">إدارة الجهات</h1>
+<section class="panel">
+  <h2>إنشاء جهة</h2>
+  <form method="post" enctype="multipart/form-data">{% csrf_token %}{% include "core/partials/form_fields.html" with form=form %}<div class="actions"><button class="primary" type="submit">حفظ الجهة</button></div></form>
+</section>
+<section class="section">
+  <table><thead><tr><th>الاسم</th><th>التواصل</th><th>الحالة</th></tr></thead><tbody>
+  {% for org in organizations %}<tr><td>{{ org.name }}</td><td>{{ org.contact_email }}<br>{{ org.contact_phone }}</td><td>{{ org.is_active|yesno:"نشطة,معطلة" }}</td></tr>{% empty %}<tr><td colspan="3">لا توجد جهات.</td></tr>{% endfor %}
+  </tbody></table>
+</section>
+{% endblock %}

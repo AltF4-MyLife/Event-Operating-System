@@ -1,0 +1,24 @@
+{% extends "core/base.html" %}
+{% block content %}
+<h1 class="page-title">الشهادات</h1>
+<form method="get" class="panel">
+  <label class="field">كود المتابعة<input class="input" name="code" value="{{ code }}"></label>
+  <div class="actions"><button class="primary" type="submit">تحقق من الاستحقاق</button></div>
+</form>
+{% if participant %}
+<section class="panel section">
+  <h2>{{ participant.full_name }}</h2>
+  {% if eligibility.0 %}
+    <p class="ok">{{ eligibility.1 }}</p>
+    {% if certificate %}
+      <p>رقم الشهادة: {{ certificate.serial_number }}</p>
+      <div class="actions"><a class="button primary" href="{% url 'certificate-pdf' certificate.verification_code %}">تحميل الشهادة</a><a class="button" href="{% url 'certificate-verify-code' certificate.verification_code %}">رابط التحقق</a></div>
+    {% else %}
+      <form method="post">{% csrf_token %}<input type="hidden" name="code" value="{{ code }}"><button class="primary" type="submit">إصدار الشهادة</button></form>
+    {% endif %}
+  {% else %}
+    <p class="danger-text">{{ eligibility.1 }}</p>
+  {% endif %}
+</section>
+{% endif %}
+{% endblock %}

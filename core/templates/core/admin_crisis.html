@@ -1,0 +1,6 @@
+{% extends "core/dashboard_base.html" %}
+{% block dashboard_content %}
+<h1 class="page-title">Crisis Center</h1>
+<section class="panel"><form method="post">{% csrf_token %}{% include "core/partials/form_fields.html" with form=form %}<div class="actions"><button class="primary" type="submit">حفظ البلاغ</button></div></form></section>
+<section class="section"><table><thead><tr><th>البلاغ</th><th>الأولوية</th><th>المكان</th><th>الحالة</th></tr></thead><tbody>{% for report in reports %}<tr><td>{{ report.event.name }}<br>{{ report.get_category_display }}</td><td>{{ report.priority }}</td><td>{{ report.location }}</td><td>{{ report.get_status_display }}</td></tr>{% empty %}<tr><td colspan="4">لا توجد بلاغات.</td></tr>{% endfor %}</tbody></table></section>
+{% endblock %}

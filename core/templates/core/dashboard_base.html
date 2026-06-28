@@ -1,0 +1,34 @@
+{% extends "core/base.html" %}
+{% block content %}
+<div class="dashboard-shell">
+  <aside class="panel sidebar">
+    <strong>لوحة التحكم</strong>
+    <a href="{% url 'dashboard' %}">نظرة عامة</a>
+    <a href="{% url 'admin-organizations' %}">الجهات</a>
+    <a href="{% url 'admin-users' %}">المستخدمون والأدوار</a>
+    <a href="{% url 'admin-education' %}">المدارس والمجموعات</a>
+    <a href="{% url 'admin-events' %}">الفعاليات</a>
+    <a href="{% url 'admin-venues' %}">القاعات والمكان</a>
+    <a href="{% url 'admin-sessions' %}">الجدول والجلسات</a>
+    <a href="{% url 'admin-registrations' %}">التسجيلات</a>
+    <a href="{% url 'admin-workshops' %}">الورش</a>
+    <a href="{% url 'admin-volunteers' %}">المتطوعون</a>
+    <a href="{% url 'admin-student-notes' %}">ملاحظات الطلاب</a>
+    <a href="{% url 'admin-gamification' %}">النقاط والأوسمة</a>
+    <a href="{% url 'admin-certificates' %}">الشهادات</a>
+    <a href="{% url 'admin-communications' %}">الرسائل</a>
+    <a href="{% url 'admin-crisis' %}">الأزمات</a>
+    <a href="{% url 'admin-support' %}">الدعم</a>
+    <a href="{% url 'admin-people' %}">VIP والمتحدثون والرعاة</a>
+    <a href="{% url 'admin-feedback' %}">التقييمات</a>
+    <a href="{% url 'admin-media' %}">المركز الإعلامي</a>
+    <a href="{% url 'admin-finance' %}">المالية والتذاكر</a>
+    <a href="{% url 'admin-platform' %}">إدارة المنصة</a>
+    <a href="{% url 'admin-violations' %}">المخالفات</a>
+    <a href="{% url 'admin-reports' %}">التقارير</a>
+  </aside>
+  <section>
+    {% block dashboard_content %}{% endblock %}
+  </section>
+</div>
+{% endblock %}

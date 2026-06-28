@@ -1,0 +1,13 @@
+{% extends "core/base.html" %}
+{% block content %}
+<h1 class="page-title">الجدول الزمني: {{ event.name }}</h1>
+<form method="get" class="panel form-grid">
+  <label class="field">اليوم<select name="day"><option value="">الكل</option>{% for day in days %}<option value="{{ day.id }}">{{ day.name }}</option>{% endfor %}</select></label>
+  <label class="field">المسار<select name="track"><option value="">الكل</option>{% for track in tracks %}<option value="{{ track.id }}">{{ track.name }}</option>{% endfor %}</select></label>
+  <label class="field">القاعة<select name="hall"><option value="">الكل</option>{% for hall in halls %}<option value="{{ hall.id }}">{{ hall.name }}</option>{% endfor %}</select></label>
+  <div class="actions"><button class="primary" type="submit">فلترة</button></div>
+</form>
+<section class="section">
+  {% include "core/partials/session_table.html" with sessions=sessions %}
+</section>
+{% endblock %}

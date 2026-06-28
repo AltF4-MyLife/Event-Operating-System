@@ -1,0 +1,22 @@
+{% extends "core/dashboard_base.html" %}
+{% block dashboard_content %}
+<h1 class="page-title">إدارة المنصة</h1>
+<section class="section grid">
+  <div class="panel metric"><span>الجهات</span><strong>{{ platform_stats.organizations }}</strong></div>
+  <div class="panel metric"><span>الفعاليات</span><strong>{{ platform_stats.events }}</strong></div>
+  <div class="panel metric"><span>المشاركون</span><strong>{{ platform_stats.participants }}</strong></div>
+  <div class="panel metric"><span>الشهادات</span><strong>{{ platform_stats.certificates }}</strong></div>
+</section>
+<div class="grid">
+  <section class="panel"><h2>إصدار تطبيق</h2><form method="post">{% csrf_token %}<input type="hidden" name="form_kind" value="app">{% include "core/partials/form_fields.html" with form=app_version_form %}<button class="primary" type="submit">حفظ الإصدار</button></form></section>
+  <section class="panel"><h2>خطة اشتراك</h2><form method="post">{% csrf_token %}<input type="hidden" name="form_kind" value="plan">{% include "core/partials/form_fields.html" with form=plan_form %}<button class="primary" type="submit">حفظ الخطة</button></form></section>
+  <section class="panel"><h2>اشتراك جهة</h2><form method="post">{% csrf_token %}<input type="hidden" name="form_kind" value="subscription">{% include "core/partials/form_fields.html" with form=subscription_form %}<button class="primary" type="submit">حفظ الاشتراك</button></form></section>
+  <section class="panel"><h2>Backup Snapshot</h2><form method="post">{% csrf_token %}<input type="hidden" name="form_kind" value="backup">{% include "core/partials/form_fields.html" with form=backup_form %}<button class="warn" type="submit">إنشاء Snapshot</button></form></section>
+</div>
+<section class="section grid">
+  <div class="panel"><h2>إصدارات التطبيق</h2>{% for item in app_versions %}<p>{{ item.platform }} · {{ item.version }} · {{ item.force_update|yesno:"إجباري,اختياري" }}</p>{% empty %}<p>لا توجد إصدارات.</p>{% endfor %}</div>
+  <div class="panel"><h2>الخطط</h2>{% for item in plans %}<p>{{ item.name }} · {{ item.max_events }} فعاليات · {{ item.monthly_price }}</p>{% empty %}<p>لا توجد خطط.</p>{% endfor %}</div>
+  <div class="panel"><h2>الاشتراكات</h2>{% for item in subscriptions %}<p>{{ item.organization.name }} · {{ item.plan.name }} · {{ item.active|yesno:"نشط,متوقف" }}</p>{% empty %}<p>لا توجد اشتراكات.</p>{% endfor %}</div>
+  <div class="panel"><h2>النسخ</h2>{% for item in backups %}<p>#{{ item.id }} · {{ item.organization.name|default:"المنصة" }} · {{ item.get_status_display }}</p>{% empty %}<p>لا توجد نسخ.</p>{% endfor %}</div>
+</section>
+{% endblock %}

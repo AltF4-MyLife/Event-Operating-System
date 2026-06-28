@@ -1,0 +1,14 @@
+{% extends "core/base.html" %}
+{% block content %}
+<h1 class="page-title">تسجيل في {{ event.name }}</h1>
+<form method="post" enctype="multipart/form-data" class="panel">
+  {% csrf_token %}
+  {{ form.non_field_errors }}
+  <div class="form-grid">
+    {% for field in form %}
+      <label class="field">{{ field.label }}{{ field }}{{ field.errors }}</label>
+    {% endfor %}
+  </div>
+  <div class="actions"><button class="primary" type="submit">إرسال التسجيل</button></div>
+</form>
+{% endblock %}

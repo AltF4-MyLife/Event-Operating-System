@@ -1,0 +1,19 @@
+{% extends "core/dashboard_base.html" %}
+{% block dashboard_content %}
+<h1 class="page-title">المركز الإعلامي</h1>
+<section class="panel">
+  <h2>إضافة مادة إعلامية</h2>
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {% include "core/partials/form_fields.html" with form=form %}
+    <div class="actions"><button class="primary" type="submit">حفظ المادة</button></div>
+  </form>
+</section>
+<section class="section">
+  <table><thead><tr><th>العنوان</th><th>الفعالية</th><th>النوع</th><th>النشر</th><th>رابط</th></tr></thead><tbody>
+  {% for item in items %}
+    <tr><td>{{ item.title }}</td><td>{{ item.event.name }}</td><td>{{ item.get_type_display }}</td><td>{{ item.published|yesno:"منشور,مسودة" }}</td><td>{% if item.external_url %}<a href="{{ item.external_url }}">فتح</a>{% endif %}</td></tr>
+  {% empty %}<tr><td colspan="5">لا توجد مواد إعلامية.</td></tr>{% endfor %}
+  </tbody></table>
+</section>
+{% endblock %}

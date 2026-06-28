@@ -1,0 +1,19 @@
+{% extends "core/base.html" %}
+{% block content %}
+<h1 class="page-title">المركز الإعلامي: {{ event.name }}</h1>
+<div class="grid">
+{% for item in items %}
+  <article class="card">
+    <span class="tag">{{ item.get_type_display }}</span>
+    <h2>{{ item.title }}</h2>
+    <p>{{ item.body|linebreaksbr }}</p>
+    <div class="actions">
+      {% if item.file %}<a class="button" href="{{ item.file.url }}">تحميل الملف</a>{% endif %}
+      {% if item.external_url %}<a class="button" href="{{ item.external_url }}">رابط خارجي</a>{% endif %}
+    </div>
+  </article>
+{% empty %}
+  <div class="empty">لا توجد مواد إعلامية منشورة بعد.</div>
+{% endfor %}
+</div>
+{% endblock %}

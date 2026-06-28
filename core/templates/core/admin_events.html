@@ -1,0 +1,33 @@
+{% extends "core/dashboard_base.html" %}
+{% block dashboard_content %}
+<h1 class="page-title">إدارة الفعاليات</h1>
+<section class="panel">
+  <h2>إنشاء فعالية</h2>
+  <form method="post" enctype="multipart/form-data">{% csrf_token %}{% include "core/partials/form_fields.html" with form=form %}<div class="actions"><button class="primary" type="submit">حفظ الفعالية</button></div></form>
+</section>
+<section class="section">
+  <table><thead><tr><th>الفعالية</th><th>الوقت والمكان</th><th>الحالة</th><th>إجراءات</th></tr></thead><tbody>
+  {% for event in events %}
+  <tr>
+    <td>{{ event.name }}<br><span class="muted">{{ event.organization.name }}</span></td>
+    <td>{{ event.starts_at|date:"Y-m-d H:i" }}<br>{{ event.venue_name }}</td>
+    <td>تسجيل: {{ event.registration_open|yesno:"مفتوح,مغلق" }}<br>صيانة: {{ event.maintenance_mode|yesno:"نعم,لا" }}</td>
+    <td>
+      <div class="actions">
+        <a class="button" href="{% url 'admin-event-modules' event.id %}">الموديولات</a>
+        <a class="button" href="{% url 'admin-registration-form' event.id %}">نموذج التسجيل</a>
+        <a class="button" href="{% url 'admin-event-venues' event.id %}">القاعات</a>
+        <a class="button" href="{% url 'admin-event-sessions' event.id %}">الجدول</a>
+        <a class="button" href="{% url 'admin-event-volunteers' event.id %}">المتطوعون</a>
+        <a class="button" href="{% url 'admin-event-gamification' event.id %}">النقاط</a>
+        <a class="button" href="{% url 'public-event' event.slug %}">عام</a>
+        <form method="post" action="{% url 'admin-event-state' event.id %}">{% csrf_token %}<input type="hidden" name="action" value="toggle_maintenance"><button type="submit">تبديل الصيانة</button></form>
+        <form method="post" action="{% url 'admin-event-state' event.id %}">{% csrf_token %}<input type="hidden" name="action" value="{% if event.registration_open %}close_registration{% else %}open_registration{% endif %}"><button type="submit">{% if event.registration_open %}غلق التسجيل{% else %}فتح التسجيل{% endif %}</button></form>
+        <form method="post" action="{% url 'admin-event-state' event.id %}">{% csrf_token %}<input type="hidden" name="action" value="archive"><button class="danger" type="submit">أرشفة</button></form>
+      </div>
+    </td>
+  </tr>
+  {% empty %}<tr><td colspan="4">لا توجد فعاليات.</td></tr>{% endfor %}
+  </tbody></table>
+</section>
+{% endblock %}

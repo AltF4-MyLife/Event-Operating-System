@@ -1,0 +1,40 @@
+{% extends "core/dashboard_base.html" %}
+{% block dashboard_content %}
+<h1 class="page-title">المستخدمون والأدوار</h1>
+<section class="panel">
+  <h2>إنشاء مستخدم</h2>
+  <form method="post">
+    {% csrf_token %}
+    <input type="hidden" name="form_kind" value="create_user">
+    {% include "core/partials/form_fields.html" with form=create_form %}
+    <div class="actions"><button class="primary" type="submit">إنشاء المستخدم</button></div>
+  </form>
+</section>
+<section class="section">
+  <table>
+    <thead><tr><th>المستخدم</th><th>الدور الحالي</th><th>الجهة</th><th>تحديث سريع</th></tr></thead>
+    <tbody>
+    {% for user in users %}
+      <tr>
+        <td>{{ user.username }}<br><span class="muted">{{ user.email }} · {{ user.is_active|yesno:"مفعل,معطل" }}</span></td>
+        <td>{{ user.profile.get_role_display }}</td>
+        <td>{{ user.profile.organization.name|default:"كل المنصة" }}</td>
+        <td>
+          <form method="post" class="form-grid">
+            {% csrf_token %}
+            <input type="hidden" name="form_kind" value="update_user">
+            <input type="hidden" name="user" value="{{ user.id }}">
+            <label class="field">الدور<select name="role">{% for value,label in roles %}<option value="{{ value }}" {% if user.profile.role == value %}selected{% endif %}>{{ label }}</option>{% endfor %}</select></label>
+            <label class="field">الجهة<select name="organization"><option value="">كل المنصة</option>{% for org in organizations %}<option value="{{ org.id }}" {% if user.profile.organization_id == org.id %}selected{% endif %}>{{ org.name }}</option>{% endfor %}</select></label>
+            <label class="field">فعاليات<select name="assigned_events" multiple size="3">{% for event in events %}<option value="{{ event.id }}" {% if event in user.profile.assigned_events.all %}selected{% endif %}>{{ event.name }}</option>{% endfor %}</select></label>
+            <label><input type="checkbox" name="is_staff" {% if user.is_staff %}checked{% endif %}> دخول الإدارة</label>
+            <label><input type="checkbox" name="is_active" {% if user.is_active %}checked{% endif %}> مفعل</label>
+            <button type="submit">حفظ</button>
+          </form>
+        </td>
+      </tr>
+    {% empty %}<tr><td colspan="4">لا يوجد مستخدمون.</td></tr>{% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endblock %}

@@ -1,0 +1,17 @@
+{% extends "core/base.html" %}
+{% block content %}
+<section class="panel" style="max-width:720px;margin:auto">
+  <h1 class="page-title">تذكرة الحضور</h1>
+  <h2>{{ event.name }}</h2>
+  <p><strong>{{ participant.full_name }}</strong></p>
+  <p>كود الحضور: {{ participant.tracking_code }}</p>
+  {% if qr_image %}<img src="{{ qr_image }}" alt="QR" style="width:180px;height:180px;background:white;padding:8px;border:1px solid #ddd">{% endif %}
+  <p>QR: {{ participant.qr_code }}</p>
+  <p>الحالة: {{ participant.get_status_display }}</p>
+  <p class="muted">{{ event.public_instructions }}</p>
+  <div class="actions">
+    <a class="button primary" href="?download=pdf">تحميل PDF</a>
+    <a class="button" href="{% url 'public-event' event.slug %}">رجوع للفعالية</a>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends "core/dashboard_base.html" %}
+{% block dashboard_content %}
+<h1 class="page-title">التقارير{% if event %}: {{ event.name }}{% endif %}</h1>
+<div class="actions">
+  {% for item in events %}<a class="button" href="{% url 'admin-event-reports' item.id %}">{{ item.name }}</a>{% endfor %}
+  {% if event %}
+    <a class="button" href="{% url 'admin-event-participants-export' event.id %}">Excel المشاركين</a>
+    <a class="button" href="{% url 'admin-event-attendance-export' event.id %}">Excel الحضور</a>
+    <a class="button" href="{% url 'admin-event-certificates-export' event.id %}">Excel الشهادات</a>
+    <a class="button" href="{% url 'admin-event-workshops-export' event.id %}">Excel الورش</a>
+    <a class="button" href="{% url 'admin-event-violations-export' event.id %}">Excel المخالفات</a>
+    <a class="button primary" href="{% url 'admin-event-final-report' event.id %}">تقرير نهائي</a>
+    <a class="button" href="{% url 'admin-event-final-report' event.id %}?download=pdf">PDF</a>
+  {% else %}
+    <a class="button" href="{% url 'admin-participants-export' %}">Excel المشاركين</a>
+    <a class="button" href="{% url 'admin-attendance-export' %}">Excel الحضور</a>
+    <a class="button" href="{% url 'admin-certificates-export' %}">Excel الشهادات</a>
+    <a class="button" href="{% url 'admin-workshops-export' %}">Excel الورش</a>
+    <a class="button" href="{% url 'admin-violations-export' %}">Excel المخالفات</a>
+  {% endif %}
+</div>
+<section class="section grid">
+  <div class="panel metric"><span>المسجلون</span><strong>{{ stats.participants }}</strong></div>
+  <div class="panel metric"><span>الحضور</span><strong>{{ stats.checked_in }}</strong></div>
+  <div class="panel metric"><span>نسبة الحضور</span><strong>{{ stats.attendance_rate }}%</strong></div>
+  <div class="panel metric"><span>الشهادات</span><strong>{{ stats.certificates }}</strong></div>
+</section>
+<section class="section"><table><thead><tr><th>الحالة</th><th>العدد</th></tr></thead><tbody>{% for row in by_status %}<tr><td>{{ row.status }}</td><td>{{ row.total }}</td></tr>{% empty %}<tr><td colspan="2">لا توجد بيانات.</td></tr>{% endfor %}</tbody></table></section>
+{% endblock %}

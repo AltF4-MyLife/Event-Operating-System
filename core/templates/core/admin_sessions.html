@@ -1,0 +1,38 @@
+{% extends "core/dashboard_base.html" %}
+{% block dashboard_content %}
+<h1 class="page-title">الجدول والجلسات{% if event %}: {{ event.name }}{% endif %}</h1>
+
+<section class="panel">
+  <h2>إنشاء جلسة</h2>
+  <form method="post">
+    {% csrf_token %}
+    {% include "core/partials/form_fields.html" with form=form %}
+    <div class="actions"><button class="primary" type="submit">حفظ الجلسة</button></div>
+  </form>
+</section>
+
+<section class="section">
+  <table>
+    <thead>
+      <tr><th>الجلسة</th><th>التوقيت</th><th>المكان</th><th>المتحدثون</th><th>الحالة</th></tr>
+    </thead>
+    <tbody>
+      {% for session in sessions %}
+        <tr>
+          <td>{{ session.title }}<br><span class="muted">{{ session.event.name }}</span></td>
+          <td>{{ session.starts_at|date:"Y-m-d H:i" }}<br>{{ session.ends_at|date:"Y-m-d H:i" }}</td>
+          <td>
+            {% if session.day %}{{ session.day.name }}<br>{% endif %}
+            {% if session.track %}{{ session.track.name }}<br>{% endif %}
+            {% if session.hall %}{{ session.hall.name }}{% else %}<span class="muted">بدون قاعة</span>{% endif %}
+          </td>
+          <td>{% for speaker in session.speakers.all %}{{ speaker.name }}{% if not forloop.last %}، {% endif %}{% empty %}<span class="muted">لا يوجد</span>{% endfor %}</td>
+          <td>{{ session.get_status_display }}<br>{{ session.is_public|yesno:"ظاهر للجمهور,داخلي" }}</td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="5">لا توجد جلسات بعد.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endblock %}

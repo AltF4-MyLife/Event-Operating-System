@@ -1,0 +1,31 @@
+{% extends "core/dashboard_base.html" %}
+{% block title %}لوحة الإدارة{% endblock %}
+{% block dashboard_content %}
+<h1 class="page-title">نظرة عامة</h1>
+<div class="grid">
+  <div class="panel metric"><span>الجهات</span><strong>{{ stats.organizations }}</strong></div>
+  <div class="panel metric"><span>الفعاليات</span><strong>{{ stats.events }}</strong></div>
+  <div class="panel metric"><span>المسجلون</span><strong>{{ stats.participants }}</strong></div>
+  <div class="panel metric"><span>المقبولون</span><strong>{{ stats.approved }}</strong></div>
+  <div class="panel metric"><span>المرفوضون</span><strong>{{ stats.rejected }}</strong></div>
+  <div class="panel metric"><span>قائمة الانتظار</span><strong>{{ stats.waitlisted }}</strong></div>
+  <div class="panel metric"><span>الحضور الفعلي</span><strong>{{ stats.checked_in }}</strong></div>
+  <div class="panel metric"><span>نسبة الحضور</span><strong>{{ stats.attendance_rate }}%</strong></div>
+  <div class="panel metric"><span>الورش</span><strong>{{ stats.workshops }}</strong></div>
+  <div class="panel metric"><span>الشهادات</span><strong>{{ stats.certificates }}</strong></div>
+  <div class="panel metric"><span>المخالفات</span><strong>{{ stats.violations }}</strong></div>
+  <div class="panel metric"><span>الدعم وSOS</span><strong>{{ stats.support_tickets }} / {{ stats.sos }}</strong></div>
+</div>
+<section class="section">
+  <h2>فعاليات تحتاج متابعة</h2>
+  <table><thead><tr><th>الفعالية</th><th>الجهة</th><th>التسجيل</th><th>إجراءات</th></tr></thead><tbody>
+  {% for event in events %}
+    <tr><td>{{ event.name }}</td><td>{{ event.organization.name }}</td><td>{{ event.registration_open|yesno:"مفتوح,مغلق" }}</td><td><a class="button" href="{% url 'admin-event-modules' event.id %}">الموديولات</a> <a class="button" href="{% url 'admin-event-registrations' event.id %}">التسجيلات</a> <a class="button" href="{% url 'admin-checkin' event.id %}">الحضور</a></td></tr>
+  {% empty %}<tr><td colspan="4">لا توجد فعاليات.</td></tr>{% endfor %}
+  </tbody></table>
+</section>
+<section class="section grid">
+  <div class="panel"><h2>تنبيهات تحتاج إجراء</h2>{% for alert in alerts %}<p>{{ alert.event.name }} · {{ alert.get_category_display }} · {{ alert.get_status_display }}</p>{% empty %}<p>لا توجد تنبيهات مفتوحة.</p>{% endfor %}</div>
+  <div class="panel"><h2>أحدث العمليات</h2>{% for item in recent_audit %}<p>{{ item.created_at|date:"H:i" }} · {{ item.action }} · {{ item.entity_type }}</p>{% empty %}<p>لا يوجد سجل عمليات بعد.</p>{% endfor %}</div>
+</section>
+{% endblock %}

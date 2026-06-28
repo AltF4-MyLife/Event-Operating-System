@@ -1,0 +1,42 @@
+{% extends "core/dashboard_base.html" %}
+{% block dashboard_content %}
+<h1 class="page-title">إدارة التسجيلات{% if event %}: {{ event.name }}{% endif %}</h1>
+{% if event %}
+<section class="panel">
+  <h2>استيراد مشاركين من Excel</h2>
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input type="hidden" name="form_kind" value="import">
+    {% include "core/partials/form_fields.html" with form=import_form %}
+    <p class="muted">الأعمدة المدعومة: full_name/name/الاسم، phone/mobile/الهاتف، email، national_id، governorate، registration_type.</p>
+    <div class="actions"><button class="primary" type="submit">استيراد</button></div>
+  </form>
+</section>
+{% endif %}
+<form method="get" class="panel form-grid">
+  <label class="field">بحث<input class="input" name="q" value="{{ search }}"></label>
+  <label class="field">الحالة<select name="status"><option value="">الكل</option>{% for value,label in statuses %}<option value="{{ value }}" {% if status_filter == value %}selected{% endif %}>{{ label }}</option>{% endfor %}</select></label>
+  <div class="actions"><button class="primary" type="submit">بحث</button>{% if event %}<a class="button" href="{% url 'admin-event-participants-export' event.id %}">تصدير Excel</a>{% else %}<a class="button" href="{% url 'admin-participants-export' %}">تصدير Excel</a>{% endif %}</div>
+</form>
+<form method="post" id="bulk-review-form" class="panel">
+  {% csrf_token %}
+  <input type="hidden" name="form_kind" value="bulk">
+  {% include "core/partials/form_fields.html" with form=bulk_form %}
+  <div class="actions"><button class="warn" type="submit">تطبيق على المحدد</button></div>
+</form>
+<section class="section">
+  <table><thead><tr><th>تحديد</th><th>المشارك</th><th>الحالة</th><th>التواصل</th><th>إجراءات</th></tr></thead><tbody>
+  {% for p in participants %}
+  <tr>
+    <td><input type="checkbox" name="selected" value="{{ p.id }}" form="bulk-review-form"></td>
+    <td><a href="{% url 'admin-participant-detail' p.id %}">{{ p.full_name }}</a><br><span class="muted">{{ p.tracking_code }} · {{ p.event.name }}</span></td>
+    <td>{{ p.get_status_display }}</td>
+    <td>{{ p.phone }}<br>{{ p.email }}</td>
+    <td>
+      <div class="actions"><a class="button" href="{% url 'admin-participant-detail' p.id %}">ملف</a><form method="post" class="actions">{% csrf_token %}<input type="hidden" name="participant" value="{{ p.id }}"><input class="input" name="note" placeholder="ملاحظة" style="max-width:180px"><button class="primary" name="action" value="approve" type="submit">قبول</button><button name="action" value="waitlist" type="submit">انتظار</button><button name="action" value="need_info" type="submit">استكمال</button><button class="danger" name="action" value="reject" type="submit">رفض</button></form></div>
+    </td>
+  </tr>
+  {% empty %}<tr><td colspan="5">لا توجد تسجيلات.</td></tr>{% endfor %}
+  </tbody></table>
+</section>
+{% endblock %}

@@ -1,0 +1,45 @@
+{% extends "core/base.html" %}
+{% block content %}
+<section class="hero" style="background-color:{{ event.effective_primary_color }}">
+  <div>
+    <h1>{{ event.name }}</h1>
+    <p>{{ event.description|default:event.short_description|linebreaksbr }}</p>
+    <p>{{ event.organization.name }} · {{ event.starts_at|date:"Y-m-d H:i" }} · {{ event.venue_name }}</p>
+    <div class="actions">
+      <a class="button primary" href="{% url 'public-register' event.slug %}">التسجيل</a>
+      <a class="button" href="{% url 'public-schedule' event.slug %}">الجدول</a>
+      <a class="button" href="{% url 'public-workshops' event.slug %}">الورش</a>
+      <a class="button" href="{% url 'public-feedback' event.slug %}">التقييم</a>
+      {% if leaderboard_enabled %}<a class="button" href="{% url 'public-leaderboard' event.slug %}">الترتيب</a>{% endif %}
+      <a class="button" href="{% url 'public-media' event.slug %}">المركز الإعلامي</a>
+      <a class="button" href="{% url 'public-support' event.slug %}">الدعم</a>
+    </div>
+  </div>
+</section>
+<section class="section grid">
+  <div class="panel"><strong>المكان</strong><p>{{ event.venue_name }}<br>{{ event.venue_address }}</p>{% if event.map_url %}<a href="{{ event.map_url }}">الخريطة</a>{% endif %}</div>
+  <div class="panel"><strong>السعة</strong><p>{{ event.capacity|default:"مفتوحة" }}</p></div>
+  <div class="panel"><strong>التعليمات</strong><p>{{ event.public_instructions|default:"سيتم نشر تعليمات الحضور هنا."|linebreaksbr }}</p></div>
+</section>
+<section class="section">
+  <h2>جلسات قريبة</h2>
+  {% include "core/partials/session_table.html" with sessions=sessions %}
+</section>
+<section class="section">
+  <h2>الورش</h2>
+  <div class="grid">
+    {% for workshop in workshops %}
+      <article class="card"><h3>{{ workshop.title }}</h3><p class="muted">{{ workshop.starts_at|date:"Y-m-d H:i" }} · {{ workshop.hall.name }}</p><p>المقاعد المتاحة: {{ workshop.seats_available }}</p></article>
+    {% empty %}
+      <div class="empty">لا توجد ورش مفتوحة حاليًا.</div>
+    {% endfor %}
+  </div>
+</section>
+<section class="section">
+  <h2>المتحدثون والرعاة</h2>
+  <div class="grid">
+    {% for speaker in speakers %}<article class="card"><h3>{{ speaker.name }}</h3><p>{{ speaker.title }}</p><p class="muted">{{ speaker.bio|truncatewords:20 }}</p></article>{% endfor %}
+    {% for sponsor in sponsors %}<article class="card"><h3>{{ sponsor.name }}</h3><p class="tag">{{ sponsor.get_level_display }}</p></article>{% endfor %}
+  </div>
+</section>
+{% endblock %}

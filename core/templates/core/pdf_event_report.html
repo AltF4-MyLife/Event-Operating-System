@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head><meta charset="utf-8"><style>body{font-family:Tahoma,Arial;padding:32px;color:#18211f}h1{color:#0f766e}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.box{border:1px solid #b8b4aa;padding:12px;margin:8px 0}table{width:100%;border-collapse:collapse}td,th{border:1px solid #ccc;padding:6px;text-align:right}</style></head>
+<body>
+  <h1>التقرير النهائي: {{ event.name }}</h1>
+  <p>{{ event.organization.name }} · {{ event.starts_at|date:"Y-m-d" }} · Snapshot #{{ snapshot.id }}</p>
+  <div class="grid">
+    <div class="box"><strong>المسجلون</strong><p>{{ data.stats.participants }}</p></div>
+    <div class="box"><strong>الحضور</strong><p>{{ data.stats.checked_in }} · {{ data.stats.attendance_rate }}%</p></div>
+    <div class="box"><strong>الشهادات</strong><p>{{ data.stats.certificates }}</p></div>
+    <div class="box"><strong>الاستردادات</strong><p>{{ data.finance.refunds }}</p></div>
+    <div class="box"><strong>الصافي المالي</strong><p>{{ data.finance.net }}</p></div>
+  </div>
+  <h2>حالات التسجيل</h2>
+  <table><tr><th>الحالة</th><th>العدد</th></tr>{% for row in data.by_status %}<tr><td>{{ row.status }}</td><td>{{ row.total }}</td></tr>{% endfor %}</table>
+  <h2>الورش</h2>
+  <table><tr><th>الورشة</th><th>التسجيلات</th><th>السعة</th></tr>{% for row in data.workshops %}<tr><td>{{ row.title }}</td><td>{{ row.registrations_total }}</td><td>{{ row.capacity }}</td></tr>{% endfor %}</table>
+  <h2>المخاطر</h2>
+  <p>SOS مفتوح: {{ data.risks.open_sos }} · دعم مفتوح: {{ data.risks.open_support }} · مخالفات: {{ data.risks.violations }}</p>
+</body>
+</html>

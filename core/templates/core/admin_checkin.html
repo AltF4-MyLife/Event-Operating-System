@@ -1,0 +1,10 @@
+{% extends "core/dashboard_base.html" %}
+{% block dashboard_content %}
+<h1 class="page-title">Check-in: {{ event.name }}</h1>
+<form method="post" class="panel">{% csrf_token %}{% include "core/partials/form_fields.html" with form=form %}<div class="actions"><button class="primary" type="submit">تسجيل الإجراء</button></div></form>
+<section class="section">
+  <table><thead><tr><th>الوقت</th><th>المشارك</th><th>الإجراء</th><th>النتيجة</th><th>الموظف</th></tr></thead><tbody>
+  {% for log in logs %}<tr><td>{{ log.checked_at|date:"Y-m-d H:i" }}</td><td>{{ log.participant.full_name|default:log.code_scanned }}</td><td>{{ log.get_action_display }}</td><td>{{ log.message }}</td><td>{{ log.performed_by }}</td></tr>{% empty %}<tr><td colspan="5">لا توجد سجلات حضور.</td></tr>{% endfor %}
+  </tbody></table>
+</section>
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends "core/base.html" %}
+{% block title %}تسجيل الدخول{% endblock %}
+{% block content %}
+<section class="panel" style="max-width:460px;margin:auto">
+  <h1 class="page-title">تسجيل الدخول</h1>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+    <div class="field">{{ form.username.label_tag }}{{ form.username }}</div>
+    <div class="field">{{ form.password.label_tag }}{{ form.password }}</div>
+    <div class="actions"><button class="primary" type="submit">دخول</button></div>
+  </form>
+</section>
+{% endblock %}

@@ -1,0 +1,36 @@
+{% extends "core/dashboard_base.html" %}
+{% block dashboard_content %}
+<h1 class="page-title">ملاحظات الطلاب{% if event %}: {{ event.name }}{% endif %}</h1>
+
+<section class="panel">
+  <h2>ملاحظة جديدة</h2>
+  <form method="post">
+    {% csrf_token %}
+    {% include "core/partials/form_fields.html" with form=form %}
+    <div class="actions"><button class="primary" type="submit">حفظ الملاحظة</button></div>
+  </form>
+</section>
+
+<section class="section">
+  <table>
+    <thead><tr><th>الطالب</th><th>التصنيف</th><th>الارتباط</th><th>الملاحظة</th><th>الظهور</th></tr></thead>
+    <tbody>
+      {% for note in notes %}
+        <tr>
+          <td>{{ note.participant.full_name }}<br><span class="muted">{{ note.participant.event.name }}</span></td>
+          <td>{{ note.category }}</td>
+          <td>
+            {% if note.session %}جلسة: {{ note.session.title }}<br>{% endif %}
+            {% if note.workshop %}ورشة: {{ note.workshop.title }}{% endif %}
+            {% if not note.session and not note.workshop %}<span class="muted">عام</span>{% endif %}
+          </td>
+          <td>{{ note.note|linebreaksbr }}</td>
+          <td>{{ note.visible_to_student|yesno:"ظاهرة للطالب,داخلية" }}<br><span class="muted">{{ note.author|default:"-" }}</span></td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="5">لا توجد ملاحظات بعد.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endblock %}

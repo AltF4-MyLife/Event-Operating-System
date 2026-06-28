@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head><meta charset="utf-8"><style>body{font-family:Tahoma,Arial;text-align:center;padding:64px;color:#18211f}.box{border:6px solid #0f766e;padding:48px}h1{font-size:42px}p{font-size:20px}.code{font-size:13px;color:#555}</style></head>
+<body>
+  <div class="box">
+    <h1>{{ certificate.template.title|default:"شهادة تقدير" }}</h1>
+    <p>{{ certificate.template.body_template|default:"تشهد إدارة الفعالية بأن {participant} قد شارك في {event}."|cut:"{participant}" }} <strong>{{ certificate.participant.full_name }}</strong> في <strong>{{ certificate.event.name }}</strong>.</p>
+    <p>{{ certificate.event.organization.name }}</p>
+    <p>{{ certificate.issued_at|date:"Y-m-d" }}</p>
+    {% if qr_image %}<img src="{{ qr_image }}" width="120" height="120" alt="QR">{% endif %}
+    <p class="code">Serial: {{ certificate.serial_number }} · Verify: {{ certificate.verification_code }}</p>
+  </div>
+</body>
+</html>

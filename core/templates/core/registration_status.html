@@ -1,0 +1,22 @@
+{% extends "core/base.html" %}
+{% block content %}
+<h1 class="page-title">حالة التسجيل</h1>
+<form method="get" class="panel">
+  <label class="field">رقم المتابعة<input name="code" value="{{ code }}" class="input"></label>
+  <div class="actions"><button class="primary" type="submit">عرض الحالة</button></div>
+</form>
+{% if participant %}
+<section class="panel section">
+  <h2>{{ participant.full_name }}</h2>
+  <p>الحالة: <strong>{{ participant.get_status_display }}</strong></p>
+  <p>رقم المتابعة: {{ participant.tracking_code }}</p>
+  {% if participant.review_notes %}<p>ملاحظات الإدارة: {{ participant.review_notes }}</p>{% endif %}
+  <div class="actions">
+    {% if participant.status == "approved" or participant.status == "checked_in" or participant.status == "checked_out" or participant.status == "attended" %}
+      <a class="button primary" href="{% url 'ticket' event.slug participant.tracking_code %}">عرض التذكرة</a>
+    {% endif %}
+    <a class="button" href="{% url 'public-certificates' event.slug %}?code={{ participant.tracking_code }}">الشهادة</a>
+  </div>
+</section>
+{% endif %}
+{% endblock %}

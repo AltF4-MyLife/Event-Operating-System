@@ -1,0 +1,17 @@
+{% extends "core/dashboard_base.html" %}
+{% block dashboard_content %}
+<h1 class="page-title">إدارة الورش{% if event %}: {{ event.name }}{% endif %}</h1>
+<section class="panel"><h2>إنشاء ورشة</h2><form method="post">{% csrf_token %}{% include "core/partials/form_fields.html" with form=form %}<div class="actions"><button class="primary" type="submit">حفظ الورشة</button></div></form></section>
+{% if event %}
+<section class="panel section">
+  <h2>تسجيل حضور ورشة</h2>
+  <form method="post">
+    {% csrf_token %}
+    <input type="hidden" name="form_kind" value="attendance">
+    {% include "core/partials/form_fields.html" with form=attendance_form %}
+    <div class="actions"><button class="primary" type="submit">تسجيل حضور الورشة</button></div>
+  </form>
+</section>
+{% endif %}
+<section class="section"><table><thead><tr><th>الورشة</th><th>الوقت</th><th>السعة</th><th>الحضور</th><th>الحالة</th></tr></thead><tbody>{% for workshop in workshops %}<tr><td>{{ workshop.title }}<br><span class="muted">{{ workshop.event.name }}</span></td><td>{{ workshop.starts_at|date:"Y-m-d H:i" }}</td><td>{{ workshop.seats_taken }} / {{ workshop.capacity }}</td><td>{{ workshop.registrations.count }}</td><td>{{ workshop.registration_open|yesno:"مفتوحة,مغلقة" }}</td></tr>{% empty %}<tr><td colspan="5">لا توجد ورش.</td></tr>{% endfor %}</tbody></table></section>
+{% endblock %}

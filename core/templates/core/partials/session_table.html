@@ -1,0 +1,19 @@
+{% if sessions %}
+<table>
+  <thead><tr><th>الجلسة</th><th>الوقت</th><th>المسار</th><th>القاعة</th><th>المتحدثون</th><th>الحالة</th></tr></thead>
+  <tbody>
+    {% for session in sessions %}
+      <tr>
+        <td>{{ session.title }}</td>
+        <td>{{ session.starts_at|date:"Y-m-d H:i" }}<br>{{ session.ends_at|date:"H:i" }}</td>
+        <td>{{ session.track.name|default:"عام" }}</td>
+        <td>{{ session.hall.name|default:"غير محدد" }}</td>
+        <td>{% for speaker in session.speakers.all %}{{ speaker.name }}{% if not forloop.last %}، {% endif %}{% empty %}غير محدد{% endfor %}</td>
+        <td><span class="tag">{{ session.get_status_display }}</span></td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<div class="empty">لا توجد جلسات مطابقة.</div>
+{% endif %}

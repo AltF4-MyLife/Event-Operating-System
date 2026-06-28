@@ -1,0 +1,23 @@
+{% extends "core/base.html" %}
+{% block content %}
+<h1 class="page-title">تقييم {{ event.name }}</h1>
+{% if surveys %}
+<div class="actions">
+  {% for item in surveys %}
+    <a class="button" href="{% url 'public-feedback' event.slug %}?survey={{ item.id }}">{{ item.title }}</a>
+  {% endfor %}
+</div>
+{% endif %}
+{% if survey and form %}
+<section class="panel section">
+  <h2>{{ survey.title }}</h2>
+  <form method="post">
+    {% csrf_token %}
+    {% include "core/partials/form_fields.html" with form=form %}
+    <div class="actions"><button class="primary" type="submit">إرسال التقييم</button></div>
+  </form>
+</section>
+{% else %}
+<div class="empty">لا توجد استبيانات متاحة حاليًا.</div>
+{% endif %}
+{% endblock %}

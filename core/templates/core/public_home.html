@@ -1,0 +1,36 @@
+{% extends "core/base.html" %}
+{% block content %}
+{% if featured %}
+<section class="hero">
+  <div>
+    <h1>{{ featured.name }}</h1>
+    <p>{{ featured.short_description|default:featured.description|truncatewords:30 }}</p>
+    <div class="actions">
+      <a class="button primary" href="{% url 'public-event' featured.slug %}">عرض الفعالية</a>
+      <a class="button" href="{% url 'public-register' featured.slug %}">التسجيل</a>
+    </div>
+  </div>
+</section>
+{% endif %}
+<section class="section">
+  <h2>الفعاليات المتاحة</h2>
+  {% if events %}
+  <div class="grid">
+    {% for event in events %}
+      <article class="card">
+        <span class="tag">{{ event.organization.name }}</span>
+        <h3>{{ event.name }}</h3>
+        <p class="muted">{{ event.starts_at|date:"Y-m-d H:i" }} · {{ event.venue_name }}</p>
+        <p>{{ event.short_description|truncatewords:18 }}</p>
+        <div class="actions">
+          <a class="button primary" href="{% url 'public-event' event.slug %}">فتح</a>
+          <a class="button" href="{% url 'public-schedule' event.slug %}">الجدول</a>
+        </div>
+      </article>
+    {% endfor %}
+  </div>
+  {% else %}
+    <div class="empty">لا توجد فعاليات منشورة بعد.</div>
+  {% endif %}
+</section>
+{% endblock %}

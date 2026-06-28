@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>شاشة العرض - {{ event.name }}</title>
+  {% load static %}<link rel="stylesheet" href="{% static 'core/styles.css' %}">
+  <meta http-equiv="refresh" content="30">
+</head>
+<body class="display-board">
+  <h1>{{ event.name }}</h1>
+  <div class="grid">
+    <section class="panel"><h2>الحضور الآن</h2><p style="font-size:54px;margin:0">{{ checked_in }}</p></section>
+    <section class="panel"><h2>الجلسات الحالية</h2>{% for session in current_sessions %}<p>{{ session.title }} · {{ session.hall.name }}</p>{% empty %}<p>لا توجد جلسات جارية.</p>{% endfor %}</section>
+    <section class="panel"><h2>القادمة</h2>{% for session in upcoming_sessions %}<p>{{ session.starts_at|date:"H:i" }} · {{ session.title }}</p>{% empty %}<p>لا توجد جلسات قادمة.</p>{% endfor %}</section>
+    <section class="panel"><h2>تنبيهات</h2>{% for alert in alerts %}<p>{{ alert.get_category_display }} · {{ alert.location }}</p>{% empty %}<p>لا توجد تنبيهات مفتوحة.</p>{% endfor %}</section>
+  </div>
+</body>
+</html>

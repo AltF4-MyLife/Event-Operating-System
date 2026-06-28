@@ -1,0 +1,14 @@
+{% extends "core/dashboard_base.html" %}
+{% block dashboard_content %}
+<h1 class="page-title">طلبات الدعم</h1>
+<section class="section"><table><thead><tr><th>الطلب</th><th>الحالة</th><th>الرسالة</th><th>رد</th></tr></thead><tbody>
+{% for ticket in tickets %}
+<tr>
+  <td>{{ ticket.tracking_code }}<br>{{ ticket.subject }}<br><span class="muted">{{ ticket.event.name }}</span></td>
+  <td>{{ ticket.get_status_display }}</td>
+  <td>{{ ticket.message|truncatewords:18 }}</td>
+  <td><form method="post" enctype="multipart/form-data">{% csrf_token %}<input type="hidden" name="ticket" value="{{ ticket.id }}">{% include "core/partials/form_fields.html" with form=reply_form %}<select name="status"><option value="">بدون تغيير</option><option value="resolved">تم الحل</option><option value="closed">مغلق</option><option value="reopened">إعادة فتح</option></select><button class="primary" type="submit">إرسال</button></form></td>
+</tr>
+{% empty %}<tr><td colspan="4">لا توجد طلبات دعم.</td></tr>{% endfor %}
+</tbody></table></section>
+{% endblock %}

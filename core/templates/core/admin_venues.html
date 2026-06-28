@@ -1,0 +1,61 @@
+{% extends "core/dashboard_base.html" %}
+{% block dashboard_content %}
+<h1 class="page-title">القاعات والمكان{% if event %}: {{ event.name }}{% endif %}</h1>
+
+<div class="grid">
+  <section class="panel">
+    <h2>يوم فعالية</h2>
+    <form method="post">
+      {% csrf_token %}
+      <input type="hidden" name="form_kind" value="day">
+      {% include "core/partials/form_fields.html" with form=day_form %}
+      <button class="primary" type="submit">حفظ اليوم</button>
+    </form>
+  </section>
+  <section class="panel">
+    <h2>مسار</h2>
+    <form method="post">
+      {% csrf_token %}
+      <input type="hidden" name="form_kind" value="track">
+      {% include "core/partials/form_fields.html" with form=track_form %}
+      <button class="primary" type="submit">حفظ المسار</button>
+    </form>
+  </section>
+  <section class="panel">
+    <h2>قاعة أو منطقة</h2>
+    <form method="post">
+      {% csrf_token %}
+      <input type="hidden" name="form_kind" value="hall">
+      {% include "core/partials/form_fields.html" with form=hall_form %}
+      <button class="primary" type="submit">حفظ القاعة</button>
+    </form>
+  </section>
+</div>
+
+<section class="section grid">
+  <div class="panel">
+    <h2>الأيام</h2>
+    {% for day in days %}
+      <p>{{ day.name }} · {{ day.date|date:"Y-m-d" }} · {{ day.event.name }}</p>
+    {% empty %}
+      <p>لا توجد أيام بعد.</p>
+    {% endfor %}
+  </div>
+  <div class="panel">
+    <h2>المسارات</h2>
+    {% for track in tracks %}
+      <p><span class="swatch" style="background: {{ track.color }}"></span> {{ track.name }} · {{ track.event.name }}</p>
+    {% empty %}
+      <p>لا توجد مسارات بعد.</p>
+    {% endfor %}
+  </div>
+  <div class="panel">
+    <h2>القاعات</h2>
+    {% for hall in halls %}
+      <p>{{ hall.name }} · {{ hall.capacity }} مقعد · {{ hall.event.name }} · {{ hall.is_active|yesno:"مفعلة,متوقفة" }}</p>
+    {% empty %}
+      <p>لا توجد قاعات بعد.</p>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

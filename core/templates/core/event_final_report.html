@@ -1,0 +1,18 @@
+{% extends "core/dashboard_base.html" %}
+{% block dashboard_content %}
+<h1 class="page-title">التقرير النهائي: {{ event.name }}</h1>
+<div class="actions"><a class="button primary" href="?download=pdf">تحميل PDF</a><a class="button" href="{% url 'admin-event-reports' event.id %}">رجوع للتقارير</a></div>
+<section class="section grid">
+  <div class="panel metric"><span>المسجلون</span><strong>{{ data.stats.participants }}</strong></div>
+  <div class="panel metric"><span>الحضور</span><strong>{{ data.stats.checked_in }}</strong></div>
+  <div class="panel metric"><span>الشهادات</span><strong>{{ data.stats.certificates }}</strong></div>
+  <div class="panel metric"><span>الاستردادات</span><strong>{{ data.finance.refunds }}</strong></div>
+  <div class="panel metric"><span>الصافي المالي</span><strong>{{ data.finance.net }}</strong></div>
+</section>
+<section class="section grid">
+  <div class="panel"><h2>حالات التسجيل</h2>{% for row in data.by_status %}<p>{{ row.status }} · {{ row.total }}</p>{% empty %}<p>لا توجد بيانات.</p>{% endfor %}</div>
+  <div class="panel"><h2>الورش</h2>{% for row in data.workshops %}<p>{{ row.title }} · {{ row.registrations_total }}/{{ row.capacity }}</p>{% empty %}<p>لا توجد ورش.</p>{% endfor %}</div>
+  <div class="panel"><h2>المخاطر والدعم</h2><p>SOS مفتوح: {{ data.risks.open_sos }}</p><p>دعم مفتوح: {{ data.risks.open_support }}</p><p>مخالفات: {{ data.risks.violations }}</p></div>
+  <div class="panel"><h2>التقييم</h2><p>متوسط الرضا: {{ data.feedback_avg|floatformat:1 }}</p><p>Snapshot #{{ snapshot.id }}</p></div>
+</section>
+{% endblock %}

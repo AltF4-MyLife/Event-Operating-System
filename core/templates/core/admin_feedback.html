@@ -1,0 +1,42 @@
+{% extends "core/dashboard_base.html" %}
+{% block dashboard_content %}
+<h1 class="page-title">التقييمات والاستبيانات</h1>
+<div class="grid">
+  <section class="panel">
+    <h2>إنشاء استبيان</h2>
+    <form method="post">
+      {% csrf_token %}
+      <input type="hidden" name="form_kind" value="survey">
+      {% include "core/partials/form_fields.html" with form=survey_form %}
+      <div class="actions"><button class="primary" type="submit">حفظ الاستبيان</button></div>
+    </form>
+  </section>
+  <section class="panel">
+    <h2>إضافة سؤال</h2>
+    <form method="post">
+      {% csrf_token %}
+      <input type="hidden" name="form_kind" value="question">
+      {% include "core/partials/form_fields.html" with form=question_form %}
+      <div class="actions"><button class="primary" type="submit">حفظ السؤال</button></div>
+    </form>
+  </section>
+</div>
+<section class="section">
+  <h2>الاستبيانات</h2>
+  <table><thead><tr><th>الاستبيان</th><th>الفعالية</th><th>الأسئلة</th><th>شرط شهادة</th><th>الحالة</th></tr></thead><tbody>
+  {% for survey in surveys %}
+    <tr><td>{{ survey.title }}</td><td>{{ survey.event.name }}</td><td>{{ survey.questions.count }}</td><td>{{ survey.certificate_required|yesno:"نعم,لا" }}</td><td>{{ survey.active|yesno:"نشط,معطل" }}</td></tr>
+  {% empty %}<tr><td colspan="5">لا توجد استبيانات.</td></tr>{% endfor %}
+  </tbody></table>
+</section>
+<section class="section grid">
+  <div class="panel">
+    <h2>ملخص النتائج</h2>
+    {% for row in stats %}<p>{{ row.survey__title }} · {{ row.total }} رد · متوسط {{ row.avg|floatformat:1 }}</p>{% empty %}<p>لا توجد ردود بعد.</p>{% endfor %}
+  </div>
+  <div class="panel">
+    <h2>آخر الردود</h2>
+    {% for response in responses %}<p>{{ response.survey.title }} · {{ response.participant.full_name }} · {{ response.satisfaction_score }}</p>{% empty %}<p>لا توجد ردود.</p>{% endfor %}
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,19 @@
+{% extends "core/base.html" %}
+{% block content %}
+<h1 class="page-title">التحقق من الشهادة</h1>
+<form method="get" class="panel">
+  <label class="field">كود التحقق<input class="input" name="code" value="{{ verification_code }}"></label>
+  <div class="actions"><button class="primary" type="submit">تحقق</button></div>
+</form>
+{% if certificate %}
+<section class="panel section">
+  <h2>{{ certificate.get_status_display }}</h2>
+  <p>صاحب الشهادة: {{ certificate.participant.full_name }}</p>
+  <p>نوع الشهادة: {{ certificate.certificate_type }}</p>
+  <p>الفعالية: {{ certificate.event.name }}</p>
+  <p>الجهة: {{ certificate.event.organization.name }}</p>
+  <p>تاريخ الإصدار: {{ certificate.issued_at|date:"Y-m-d" }}</p>
+  {% if certificate.status == "issued" %}<a class="button primary" href="{% url 'certificate-pdf' certificate.verification_code %}">تحميل PDF</a>{% endif %}
+</section>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,27 @@
+{% extends "core/base.html" %}
+{% block content %}
+<h1 class="page-title">ترتيب النقاط: {{ event.name }}</h1>
+<div class="actions">
+  <a class="button" href="{% url 'public-event' event.slug %}">الفعالية</a>
+  <a class="button" href="{% url 'public-schedule' event.slug %}">الجدول</a>
+  <a class="button" href="{% url 'public-workshops' event.slug %}">الورش</a>
+</div>
+
+<section class="section">
+  <table>
+    <thead><tr><th>#</th><th>المشارك</th><th>النقاط</th><th>الأوسمة</th></tr></thead>
+    <tbody>
+      {% for participant in participants %}
+        <tr>
+          <td>{{ forloop.counter }}</td>
+          <td>{{ participant.full_name }}{% if participant.school %}<br><span class="muted">{{ participant.school.name }}</span>{% endif %}</td>
+          <td>{{ participant.points_total }}</td>
+          <td>{% for award in participant.badges.all %}<span class="tag">{{ award.badge.name }}</span> {% empty %}<span class="muted">لا يوجد</span>{% endfor %}</td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="4">لم يتم تسجيل نقاط بعد.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endblock %}

@@ -1,0 +1,13 @@
+{% extends "core/dashboard_base.html" %}
+{% block dashboard_content %}
+<h1 class="page-title">Modules: {{ event.name }}</h1>
+<table><thead><tr><th>الميزة</th><th>الحالة</th><th>تغيير</th></tr></thead><tbody>
+{% for module in modules %}
+<tr>
+  <td>{{ module.get_code_display }}<br><span class="muted">{{ module.code }}</span></td>
+  <td>{% if module.enabled %}<span class="tag">مفعلة</span>{% else %}<span class="tag">معطلة</span>{% endif %}</td>
+  <td><form method="post">{% csrf_token %}<input type="hidden" name="code" value="{{ module.code }}"><label><input type="checkbox" name="enabled" {% if module.enabled %}checked{% endif %}> مفعلة</label><button type="submit">حفظ</button></form></td>
+</tr>
+{% endfor %}
+</tbody></table>
+{% endblock %}

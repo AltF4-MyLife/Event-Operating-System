@@ -1,0 +1,27 @@
+{% extends "core/base.html" %}
+{% block content %}
+<h1 class="page-title">متابعة طلب الدعم</h1>
+<form method="get" class="panel">
+  <label class="field">رقم المتابعة<input class="input" name="code" value="{{ code }}"></label>
+  <div class="actions"><button class="primary" type="submit">عرض الطلب</button><a class="button" href="{% url 'public-support' event.slug %}">فتح طلب جديد</a></div>
+</form>
+{% if ticket %}
+<section class="panel section">
+  <h2>{{ ticket.subject }}</h2>
+  <p>رقم المتابعة: {{ ticket.tracking_code }}</p>
+  <p>الحالة: <strong>{{ ticket.get_status_display }}</strong></p>
+  <p>الأولوية: {{ ticket.priority }} · التصنيف: {{ ticket.category }}</p>
+  <p>{{ ticket.message }}</p>
+</section>
+<section class="section">
+  <h2>الردود</h2>
+  {% for reply in ticket.replies.all %}
+    {% if reply.public %}
+      <article class="card"><p>{{ reply.message }}</p><p class="muted">{{ reply.created_at|date:"Y-m-d H:i" }}</p></article>
+    {% endif %}
+  {% empty %}
+    <div class="empty">لا توجد ردود عامة بعد.</div>
+  {% endfor %}
+</section>
+{% endif %}
+{% endblock %}

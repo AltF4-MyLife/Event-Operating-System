@@ -1,0 +1,23 @@
+{% extends "core/dashboard_base.html" %}
+{% block dashboard_content %}
+<h1 class="page-title">المدارس والإدارات والمجموعات</h1>
+<div class="grid">
+  <section class="panel">
+    <h2>إدارة تعليمية</h2>
+    <form method="post">{% csrf_token %}<input type="hidden" name="form_kind" value="admin">{% include "core/partials/form_fields.html" with form=admin_form %}<button class="primary" type="submit">حفظ</button></form>
+  </section>
+  <section class="panel">
+    <h2>مدرسة</h2>
+    <form method="post">{% csrf_token %}<input type="hidden" name="form_kind" value="school">{% include "core/partials/form_fields.html" with form=school_form %}<button class="primary" type="submit">حفظ</button></form>
+  </section>
+  <section class="panel">
+    <h2>مجموعة مشاركين</h2>
+    <form method="post">{% csrf_token %}<input type="hidden" name="form_kind" value="group">{% include "core/partials/form_fields.html" with form=group_form %}<button class="primary" type="submit">حفظ</button></form>
+  </section>
+</div>
+<section class="section grid">
+  <div class="panel"><h2>الإدارات</h2>{% for item in administrations %}<p>{{ item.name }} · {{ item.governorate }} · {{ item.organization.name }}</p>{% empty %}<p>لا توجد إدارات.</p>{% endfor %}</div>
+  <div class="panel"><h2>المدارس</h2>{% for item in schools %}<p>{{ item.name }} · {{ item.administration.name }} · {{ item.city }}</p>{% empty %}<p>لا توجد مدارس.</p>{% endfor %}</div>
+  <div class="panel"><h2>المجموعات</h2>{% for item in groups %}<p>{{ item.event.name }} · {{ item.name }} · {{ item.participants.count }}/{{ item.capacity }}</p>{% empty %}<p>لا توجد مجموعات.</p>{% endfor %}</div>
+</section>
+{% endblock %}

@@ -1,0 +1,65 @@
+{% extends "core/dashboard_base.html" %}
+{% block dashboard_content %}
+<h1 class="page-title">إدارة المتطوعين{% if event %}: {{ event.name }}{% endif %}</h1>
+
+<div class="grid">
+  <section class="panel">
+    <h2>ملف متطوع</h2>
+    <form method="post">
+      {% csrf_token %}
+      <input type="hidden" name="form_kind" value="volunteer">
+      {% include "core/partials/form_fields.html" with form=volunteer_form %}
+      <button class="primary" type="submit">حفظ المتطوع</button>
+    </form>
+  </section>
+  <section class="panel">
+    <h2>شيفت متطوع</h2>
+    <form method="post">
+      {% csrf_token %}
+      <input type="hidden" name="form_kind" value="shift">
+      {% include "core/partials/form_fields.html" with form=shift_form %}
+      <button class="primary" type="submit">حفظ الشيفت</button>
+    </form>
+  </section>
+</div>
+
+<section class="section">
+  <h2>المتطوعون</h2>
+  <table>
+    <thead><tr><th>المتطوع</th><th>الدور</th><th>المنطقة</th><th>القبول</th><th>التقييم</th></tr></thead>
+    <tbody>
+      {% for volunteer in volunteers %}
+        <tr>
+          <td>{{ volunteer.participant.full_name }}<br><span class="muted">{{ volunteer.participant.event.name }}</span></td>
+          <td>{{ volunteer.get_role_display }}</td>
+          <td>{{ volunteer.area|default:"-" }}</td>
+          <td>{{ volunteer.accepted|yesno:"مقبول,لم يقبل بعد" }}</td>
+          <td>{{ volunteer.performance_score }}</td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="5">لا توجد ملفات متطوعين.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+
+<section class="section">
+  <h2>الشيفتات</h2>
+  <table>
+    <thead><tr><th>المتطوع</th><th>النوع</th><th>التوقيت</th><th>الموقع</th><th>الحالة</th></tr></thead>
+    <tbody>
+      {% for shift in shifts %}
+        <tr>
+          <td>{{ shift.volunteer.participant.full_name }}</td>
+          <td>{{ shift.get_shift_type_display }}</td>
+          <td>{{ shift.starts_at|date:"Y-m-d H:i" }}<br>{{ shift.ends_at|date:"Y-m-d H:i" }}</td>
+          <td>{{ shift.location|default:"-" }}</td>
+          <td>{{ shift.status }}</td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="5">لا توجد شيفتات بعد.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endblock %}

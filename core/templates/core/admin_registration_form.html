@@ -1,0 +1,17 @@
+{% extends "core/dashboard_base.html" %}
+{% block dashboard_content %}
+<h1 class="page-title">نموذج التسجيل: {{ event.name }}</h1>
+<section class="panel">
+  <h2>إعدادات النموذج</h2>
+  <form method="post">{% csrf_token %}<input type="hidden" name="form_kind" value="settings">{% include "core/partials/form_fields.html" with form=settings_form %}<div class="actions"><button class="primary" type="submit">حفظ الإعدادات</button></div></form>
+</section>
+<section class="panel section">
+  <h2>إضافة حقل</h2>
+  <form method="post">{% csrf_token %}<input type="hidden" name="form_kind" value="field">{% include "core/partials/form_fields.html" with form=field_form %}<div class="actions"><button class="primary" type="submit">إضافة</button></div></form>
+</section>
+<section class="section">
+  <table><thead><tr><th>الحقل</th><th>النوع</th><th>إجباري</th><th>الترتيب</th></tr></thead><tbody>
+  {% for field in registration_form.fields.all %}<tr><td>{{ field.label }}</td><td>{{ field.get_field_type_display }}</td><td>{{ field.required|yesno:"نعم,لا" }}</td><td>{{ field.order }}</td></tr>{% empty %}<tr><td colspan="4">لا توجد حقول.</td></tr>{% endfor %}
+  </tbody></table>
+</section>
+{% endblock %}

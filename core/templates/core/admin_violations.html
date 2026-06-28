@@ -1,0 +1,9 @@
+{% extends "core/dashboard_base.html" %}
+{% block dashboard_content %}
+<h1 class="page-title">المخالفات والانضباط</h1>
+<div class="grid">
+  <section class="panel"><h2>نوع مخالفة</h2><form method="post">{% csrf_token %}<input type="hidden" name="form_kind" value="type">{% include "core/partials/form_fields.html" with form=type_form %}<button class="primary" type="submit">حفظ النوع</button></form></section>
+  <section class="panel"><h2>تسجيل مخالفة</h2><form method="post" enctype="multipart/form-data">{% csrf_token %}<input type="hidden" name="form_kind" value="violation">{% include "core/partials/form_fields.html" with form=violation_form %}<button class="primary" type="submit">حفظ المخالفة</button></form></section>
+</div>
+<section class="section"><table><thead><tr><th>المشارك</th><th>النوع</th><th>الإجراء</th><th>الحالة</th></tr></thead><tbody>{% for item in violations %}<tr><td>{{ item.participant.full_name }}</td><td>{{ item.violation_type.name }}</td><td>{{ item.action_taken }}</td><td>{{ item.get_status_display }}</td></tr>{% empty %}<tr><td colspan="4">لا توجد مخالفات.</td></tr>{% endfor %}</tbody></table></section>
+{% endblock %}

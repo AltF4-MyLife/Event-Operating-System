@@ -1,0 +1,22 @@
+{% extends "core/base.html" %}
+{% block content %}
+<h1 class="page-title">ورش {{ event.name }}</h1>
+<div class="grid">
+{% for workshop in workshops %}
+  <article class="card">
+    <h2>{{ workshop.title }}</h2>
+    <p class="muted">{{ workshop.starts_at|date:"Y-m-d H:i" }} · {{ workshop.hall.name|default:"قاعة غير محددة" }}</p>
+    <p>{{ workshop.description }}</p>
+    <p>المقاعد المتاحة: {{ workshop.seats_available }}</p>
+    <form method="post">
+      {% csrf_token %}
+      <input type="hidden" name="workshop" value="{{ workshop.id }}">
+      <label class="field">كود المتابعة<input class="input" name="tracking_code"></label>
+      <div class="actions"><button class="primary" type="submit">تسجيل في الورشة</button></div>
+    </form>
+  </article>
+{% empty %}
+  <div class="empty">لا توجد ورش متاحة.</div>
+{% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,39 @@
+{% load static %}
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Event Operating System{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'core/styles.css' %}">
+  {% block head %}{% endblock %}
+</head>
+<body>
+  <header class="site-header">
+    <nav class="nav">
+      <a class="brand" href="{% url 'public-home' %}">Event Operating System</a>
+      <div class="nav-links">
+        <a href="{% url 'public-home' %}">الفعاليات</a>
+        <a href="{% url 'certificate-verify' %}">تحقق من شهادة</a>
+        <a href="{% url 'swagger-ui' %}">API Docs</a>
+        {% if request.user.is_authenticated %}
+          <a href="{% url 'dashboard' %}">لوحة الإدارة</a>
+          <form method="post" action="{% url 'logout' %}">{% csrf_token %}<button type="submit">خروج</button></form>
+        {% else %}
+          <a href="{% url 'login' %}">دخول الإدارة</a>
+        {% endif %}
+      </div>
+    </nav>
+  </header>
+  <main class="layout">
+    {% if messages %}
+      <div class="messages">
+        {% for message in messages %}
+          <div class="message {{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+      </div>
+    {% endif %}
+    {% block content %}{% endblock %}
+  </main>
+</body>
+</html>

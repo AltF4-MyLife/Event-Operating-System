@@ -1,0 +1,107 @@
+{% extends "core/dashboard_base.html" %}
+{% block dashboard_content %}
+<h1 class="page-title">مركز الاتصالات</h1>
+
+<div class="grid">
+  <section class="panel">
+    <h2>Broadcast</h2>
+    <form method="post">
+      {% csrf_token %}
+      <input type="hidden" name="form_kind" value="broadcast">
+      {% include "core/partials/form_fields.html" with form=broadcast_form %}
+      <div class="actions">
+        <button class="primary" type="submit" name="send_now" value="1">حفظ وإرسال</button>
+        <button type="submit">حفظ كمسودة</button>
+      </div>
+    </form>
+  </section>
+  <section class="panel">
+    <h2>قالب بريد</h2>
+    <form method="post">
+      {% csrf_token %}
+      <input type="hidden" name="form_kind" value="template">
+      {% include "core/partials/form_fields.html" with form=template_form %}
+      <p class="muted">Placeholders: {participant} {event} {tracking_code} {qr_code} {status}</p>
+      <button class="primary" type="submit">حفظ القالب</button>
+    </form>
+  </section>
+  <section class="panel">
+    <h2>إرسال بريد لمشارك</h2>
+    <form method="post">
+      {% csrf_token %}
+      <input type="hidden" name="form_kind" value="email">
+      {% include "core/partials/form_fields.html" with form=email_form %}
+      <button class="primary" type="submit">إرسال آمن</button>
+    </form>
+  </section>
+  <section class="panel">
+    <h2>Push / In-app</h2>
+    <form method="post">
+      {% csrf_token %}
+      <input type="hidden" name="form_kind" value="push">
+      {% include "core/partials/form_fields.html" with form=push_form %}
+      <button class="primary" type="submit">تسجيل الإشعار</button>
+    </form>
+  </section>
+</div>
+
+<section class="section">
+  <h2>Broadcasts</h2>
+  <table>
+    <thead><tr><th>العنوان</th><th>الجمهور</th><th>القناة</th><th>الحالة</th></tr></thead>
+    <tbody>
+      {% for item in broadcasts %}
+        <tr><td>{{ item.title }}<br><span class="muted">{{ item.event.name }}</span></td><td>{{ item.audience }}</td><td>{{ item.get_channel_display }}</td><td>{{ item.status }}</td></tr>
+      {% empty %}
+        <tr><td colspan="4">لا توجد رسائل.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+
+<section class="section grid">
+  <div class="panel">
+    <h2>قوالب البريد</h2>
+    {% for template in templates %}
+      <p>{{ template.key }} · {{ template.subject }} · {{ template.active|yesno:"مفعل,متوقف" }}</p>
+    {% empty %}
+      <p>لا توجد قوالب.</p>
+    {% endfor %}
+  </div>
+  <div class="panel">
+    <h2>سجل الإشعارات</h2>
+    {% for log in notification_logs %}
+      <p>{{ log.title }} · {{ log.audience|default:"-" }} · {{ log.status }}</p>
+    {% empty %}
+      <p>لا توجد إشعارات.</p>
+    {% endfor %}
+  </div>
+</section>
+
+<section class="section">
+  <h2>سجل البريد</h2>
+  <table>
+    <thead><tr><th>المستلم</th><th>العنوان</th><th>الحالة</th><th>المحاولات</th><th>إجراء</th></tr></thead>
+    <tbody>
+      {% for log in email_logs %}
+        <tr>
+          <td>{{ log.to_email }}<br><span class="muted">{{ log.event.name }}</span></td>
+          <td>{{ log.subject }}</td>
+          <td>{{ log.get_status_display }}{% if log.error %}<br><span class="muted">{{ log.error|truncatechars:80 }}</span>{% endif %}</td>
+          <td>{{ log.attempts }}</td>
+          <td>
+            <form method="post">
+              {% csrf_token %}
+              <input type="hidden" name="form_kind" value="resend_email">
+              <input type="hidden" name="email_log" value="{{ log.id }}">
+              <button type="submit">إعادة إرسال</button>
+            </form>
+          </td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="5">لا توجد رسائل بريد.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endblock %}
